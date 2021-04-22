@@ -3,6 +3,7 @@ import env from '../config/config'
 import { ElMessage } from 'element-plus'
 
 const context = import.meta.globEager('./**/*.api.js')
+// const context = require.context('../modules', true, /\.api.js$/)
 let apiList = []
 Object.keys(context).forEach(key => {
     apiList = apiList.concat(context[key].default)
