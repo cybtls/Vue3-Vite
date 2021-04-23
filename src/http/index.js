@@ -1,6 +1,8 @@
 import axios from 'axios'
 import env from '../config/config'
 import { ElMessage } from 'element-plus'
+// 引入加解密
+import { encryption, decrypt } from '@/util/secretKey'
 
 const context = import.meta.globEager('./**/*.api.js')
 // const context = require.context('../modules', true, /\.api.js$/)
@@ -22,6 +24,7 @@ class HttpInstance {
         // 响应拦截
         this._instance.interceptors.response.use(this._responseIntercept.bind(this), this._errorIntercept)
 
+        // 一个个创建对应请求方法
         apiList.forEach(item => {
             let apiName = this._getApiName(item)
             this[apiName] = function (value = {}, options = {}) {
@@ -32,14 +35,39 @@ class HttpInstance {
 
     // 请求拦截封装
     _requestIntercept (config) {
+        let needEncryption = false
+        this._apiList.some(item => {
+            if (config.url.indexOf(item.url) !== -1) {
+                needEncryption = item.needEncryption
+                return true
+            }
+        })
+        // 需要加密
+        if (needEncryption) {
+            config.headers['Content-Type'] = 'application/json'
+            config.data = encryption(JSON.stringify(config.data))
+        }
         return config
     }
 
     // 响应拦截封装
     _responseIntercept (response) {
+        let needDecrypt = false,
+            responseUrl = response.config.url.split(env.baseUrl)[1]
+        this._apiList.some(item => {
+            if (item.url === responseUrl) {
+                needDecrypt = item.needDecrypt
+                return true
+            }
+        })
+        // 需要解密
+        if (needDecrypt) {
+            response.data = JSON.parse(decrypt(response.data))
+        }
         if (response.data.code === 200) {
             return response
         } else {
+            ElMessage('服务异常')
             return Promise.reject(response)
         }
     }

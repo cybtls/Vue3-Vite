@@ -1,14 +1,14 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import vue from '@vitejs/plugin-vue'
-import styleImport from 'vite-plugin-style-import'
 
+// https://vitejs.dev/config/
 export default defineConfig({
     server: {
         // 代理，最重要，其他的都可以有默认配置
         proxy: {
             '/api': {
-                target: 'http://localhost:8888/',
+                target: 'http://192.168.1.235:8888/',
                 changeOrigin: true,
             }
         },
@@ -22,22 +22,5 @@ export default defineConfig({
             '@': resolve(__dirname, 'src')
         }
     },
-    plugins: [
-        vue(),
-        styleImport({
-            libs: [
-                {
-                    libraryName: 'element-plus',
-                    esModule: true,
-                    ensureStyleFile: true,
-                    resolveStyle: (name) => {
-                        return `element-plus/lib/theme-chalk/${name}.css`
-                    },
-                    resolveComponent: (name) => {
-                        return `element-plus/lib/${name}`
-                    },
-                }
-            ]
-        })
-    ]
+    plugins: [vue()]
 })

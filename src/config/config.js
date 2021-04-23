@@ -1,4 +1,6 @@
-let baseUrl = ''
+let baseUrl = 'https://www.fastmock.site/mock/e4d5c5b159b6ac1254145b8735b5db49/vite',
+    serverRsaPublicKey = "",
+    clientRsaPrivateKey = ""
 
 switch (import.meta.env.VITE_ENVIRONMENT) {
     // 开发环境
@@ -14,5 +16,5 @@ switch (import.meta.env.VITE_ENVIRONMENT) {
 }
 
 export default {
-    baseUrl
+    baseUrl, serverRsaPublicKey, clientRsaPrivateKey
 }

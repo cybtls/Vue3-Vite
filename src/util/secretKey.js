@@ -1,5 +1,5 @@
 // 非对称加密
-import env from '@/config/env.js'
+// import env from '@/config/env.js'
 // const { JSEncrypt } = require('encryptlong')
 // // 加密
 // export const encryption = (data) => {
